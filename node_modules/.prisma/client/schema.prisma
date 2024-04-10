@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+enum GENDER{
+  MALE
+  FEMALE
+}
+
+enum ROLES{
+  USER
+  ADMIN
+  MANAGER
+  SECRATERY
+}
+enum ACTIVESTATUS{
+  BLOCKED
+  ACTIVE
+  INACTIVE
+}
+
+model Address{
+  id Int @id @default(autoincrement())
+  region String
+  zone String
+  wereda String
+  city String
+  //ref
+  kebele Kebeles[]
+  users Users[]
+
+  
+}
+model Kebeles{
+    id Int @id @default(autoincrement())
+    name String
+    addressId Int
+    //refrence 
+    address Address @relation(fields: [addressId],references: [id],onDelete: Cascade)
+    //ref
+    meder KebeleMenders[]
+    users Users[]
+
+}
+
+model KebeleMenders {
+    id Int @id @default(autoincrement())
+    kebeleId Int
+    menderName String
+    //refrence
+    kebele Kebeles @relation(fields: [kebeleId],references: [id],onDelete: Cascade)
+     users Users[]
+}
+
+model Users{
+      id Int @id @default(autoincrement())
+      email String @unique
+      phone String @unique
+      password String 
+      role ROLES @default(USER)
+      activeStatus ACTIVESTATUS @default(ACTIVE)
+      kebeleId Int
+      adressId Int
+      kebeleMenderId Int
+      //ref
+      profile Profiles?
+      //refress
+      adress Address @relation(fields: [adressId],references: [id],onDelete: Cascade)
+      kebele Kebeles @relation(fields: [kebeleId],references: [id],onDelete: Cascade)
+      kebeleMender KebeleMenders @relation(fields: [kebeleMenderId],references: [id],onDelete: Cascade)
+
+
+}
+
+model Profiles{
+      id Int @id @default(autoincrement())
+      userId Int @unique
+      firstName String
+      middleName String
+      lastName String
+      gender GENDER
+      imageUrl String
+      //reference
+      user Users @relation(fields: [userId],references: [id],onDelete: Cascade)
+}
