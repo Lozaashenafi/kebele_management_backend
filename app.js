@@ -7,13 +7,12 @@ const app = express();
 // middleware include
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+//config cors
 
+app.use(cors({ origin: true, credentials: true }));
 //import api router
 import appRoute from "./route/index.js";
 app.use("/api", appRoute);
-
-//config cors
-app.use(cors({ origin: true, credentials: true }));
 
 //testing route
 app.get("/", (req, res, next) => {

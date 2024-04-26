@@ -6,10 +6,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 const userController = {
   register: async (req, res, next) => {
-    // console.log(req.query.take);
-    // console.log(req.query.skip);
-    // console.log(req.params.id);
-    // console.log(req.body);
     //validate
     userSchema.register.parse(req.body);
     // check if the email and phone register
@@ -25,8 +21,8 @@ const userController = {
       });
     }
     //check if kebele ,address , kebele mender exist befor
-    //encript password
-    // const password = bcrypt.hashSync(req.body.password, 10);
+    // encript password
+    const password = bcrypt.hashSync(req.body.password, 10);
 
     // start creting
     const newUser = await prisma.users.create({
@@ -34,7 +30,7 @@ const userController = {
         email: req.body.email,
         phone: req.body.phone,
         role: req.body.role,
-        password: req.body.password,
+        password: password,
         profile: {
           create: {
             firstName: req.body.firstName,
@@ -153,12 +149,16 @@ const userController = {
     }
   },
   login: async (req, res, next) => {
+    console.log(req.body);
     try {
       const { email, password } = req.body;
 
       // Check if the user exists
       const userExist = await prisma.users.findFirst({
         where: { email },
+        include: {
+          profile: true,
+        },
       });
 
       if (!userExist) {
@@ -168,7 +168,8 @@ const userController = {
       }
 
       // Check if the password matches
-      if (userExist.password !== password) {
+      const isMatch = await bcrypt.compareSync(password, userExist.password);
+      if (!isMatch) {
         return res
           .status(401)
           .json({ success: false, message: "Incorrect password" });
@@ -178,7 +179,8 @@ const userController = {
       const token = jwt.sign(
         {
           id: userExist.id,
-          email: userExist.email,
+          role: userExist.role,
+          firstName: userExist.profile.firstName,
         },
         JWT_SECRATE
       );
