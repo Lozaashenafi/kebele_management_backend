@@ -8,8 +8,8 @@ const userSchema = {
     firstName: z.string(),
     middleName: z.string(),
     lastName: z.string(),
-    imageUrl: z.string(),
-    gender: z.enum(["MALE", "FEMALE"]),
+    kebele: z.string(),
+    gender: z.string(),
   }),
   update: z.object(),
   login: z.object({

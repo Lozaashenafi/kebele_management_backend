@@ -37,20 +37,17 @@ model Address{
   city String
   //ref
   kebele Kebeles[]
-  users Users[]
+
 
   
 }
-model Kebeles{
-    id Int @id @default(autoincrement())
-    name String
-    addressId Int
-    //refrence 
-    address Address @relation(fields: [addressId],references: [id],onDelete: Cascade)
-    //ref
-    meder KebeleMenders[]
-  
-
+model Kebeles {
+  id        Int      @id @default(autoincrement())
+  name      String
+  addressId Int
+  address   Address  @relation(fields: [addressId], references: [id], onDelete: Cascade) // Ref
+  meder     KebeleMenders[] // Ref
+   user Users[]  // Ref
 }
 
 model KebeleMenders {
@@ -69,11 +66,11 @@ model Users{
       password String 
       role ROLES @default(USER)
       activeStatus ACTIVESTATUS @default(ACTIVE)
-      addressId Int
+      kebeleId Int
       //ref
       profile Profiles?
       //refress
-      address Address @relation(fields: [addressId],references: [id],onDelete: Cascade)
+      kebele Kebeles @relation(fields: [kebeleId],references: [id],onDelete: Cascade)
       
 
 }
@@ -106,6 +103,7 @@ model IdRequests {
   nationality String
   houseLive String 
   requestStatus String
+  phone String @unique
   createdDate DateTime @default(now())
   // ref
      idStatus IdStatuss[]

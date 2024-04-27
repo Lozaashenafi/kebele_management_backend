@@ -3,14 +3,7 @@ import kebeleSchema from "./kebele.schema.js";
 const kebeleController = {
   register: async (req, res, next) => {
     kebeleSchema.register.parse(req.body);
-    const address = await prisma.address.create({
-      data: {
-        city: req.body.city,
-        region: req.body.region,
-        wereda: req.body.wereda,
-        zone: req.body.zone,
-      },
-    });
+
     const existingKebele = await prisma.kebeles.findFirst({
       where: {
         OR: [{ name: req.body.name }, { addressId: address.id }],
@@ -96,24 +89,11 @@ const kebeleController = {
         },
       },
     });
-    const newKebele = await prisma.kebeles.create({
-      data: {
-        name: req.body.name,
-        addressId: req.body.addressId,
-        address: {
-          create: {
-            region: req.body.region,
-            wereda: req.body.wereda,
-            city: req.body.city,
-            zone: req.body.zone,
-          },
-        },
-      },
-    });
+
     return res.status(200).json({
       success: true,
-      message: "kebele added sucessfully",
-      data: newKebele,
+      message: "kebele updated sucessfully",
+      data: updatedKebele,
     });
   },
 };
