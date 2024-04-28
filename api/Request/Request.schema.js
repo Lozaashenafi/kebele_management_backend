@@ -6,11 +6,11 @@ const RequestSchema = {
   idrequest: z.object({
     email: z.string().email(),
     fullName: z.string(),
-    fatherFullName: z.string(),
-    motherFullName: z.string(),
+    fatherName: z.string(),
+    motherName: z.string(),
     birthDate: z.string(),
     gender: z.string(),
-    houseNumber: z.string(),
+    houseNumber: z.number(),
     workStatus: z.string(),
     nationality: z.string(),
     houseLive: z.string(),
@@ -18,12 +18,11 @@ const RequestSchema = {
   }),
   birthRequests: z.object({
     email: z.string().email(),
-    fullName: z.string(),
+    firstName: z.string(),
     middleName: z.string(),
     lastName: z.string(),
-    motherFullName: z.string(),
-    houseNumber: z.string(),
-    idnumber: z.string(),
+    motherName: z.string(),
+    idnumber: z.number(),
   }),
 };
 export default RequestSchema;

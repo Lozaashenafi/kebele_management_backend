@@ -1,14 +1,15 @@
+import { date } from "zod";
 import { prisma } from "../../config/prisma.js";
 import RequestSchema from "./Request.schema.js";
 const RequestController = {
   idrequest: async (req, res, next) => {
-    console.log(res);
+    // console.log(res);
     try {
-      RequestSchema.idrequest.parse(req.body);
+      // RequestSchema.idrequest.parse(req.body);
 
       const existingRequest = await prisma.idRequests.findFirst({
         where: {
-          OR: [{ email: req.body.email }, { phone: req.body.phone }],
+          OR: [{ email: req.body.email }],
         },
       });
 
@@ -22,8 +23,8 @@ const RequestController = {
         data: {
           email: req.body.email,
           fullName: req.body.fullName,
-          fatherFullName: req.body.fatherFullName,
-          motherFullName: req.body.motherFullName,
+          fatherName: req.body.fatherName,
+          motherName: req.body.motherName,
           birthDate: req.body.birthDate,
           gender: req.body.gender,
           houseNumber: req.body.houseNumber,
@@ -35,7 +36,7 @@ const RequestController = {
       });
 
       return res.status(201).json({
-        message: "ID request created successfully",
+        message: "ID request submited successfully",
         request: newRequest,
         success: true,
       });
@@ -46,13 +47,30 @@ const RequestController = {
         .json({ message: "Internal server error", success: false });
     }
   },
-  birthRequests: async (req, res, next) => {
+  getidrequest: async (req, res, next) => {
+    try {
+      const idrequests = await prisma.idRequests.findMany({});
+      return res.status(200).json({
+        success: true,
+        data: idrequests,
+        message: "sucessfully fetch",
+      });
+    } catch (error) {
+      return res.status(200).json({
+        success: false,
+        data: error,
+        message: "error",
+      });
+    }
+  },
+
+  birthrequests: async (req, res, next) => {
     try {
       RequestSchema.birthRequests.parse(req.body);
-
+      console.log("ghfjf");
       const existingRequest = await prisma.birthRequests.findFirst({
         where: {
-          OR: [{ email: req.body.email }, { idnumber: req.body.idnumber }],
+          OR: [{ email: req.body.email }],
         },
       });
       if (existingRequest) {
@@ -61,20 +79,22 @@ const RequestController = {
           success: false,
         });
       }
+
+      const idnumber = parseInt(req.body.idnumber);
+      //const houseNumber = parseInt(req.body.houseNumber);
       const newRequest = await prisma.birthRequests.create({
         data: {
           email: req.body.email,
-          fullName: req.body.fullName,
+          firstName: req.body.firstName,
           middleName: req.body.middleName,
           lastName: req.body.lastName,
-          motherFullName: req.body.motherFullName,
-          houseNumber: req.body.houseNumber,
-          idnumber: req.body.idnumber,
+          motherName: req.body.motherName,
+          idnumber: idnumber,
         },
       });
-
+      console.log(newRequest);
       return res.status(201).json({
-        message: "birth request created successfully",
+        message: "birth request submited successfully",
         request: newRequest,
         success: true,
       });
@@ -84,6 +104,52 @@ const RequestController = {
         .status(500)
         .json({ message: "Internal server error", success: false });
     }
+  },
+  getbirthRequests: async (req, res, next) => {
+    try {
+      const birthRequests = await prisma.birthRequests.findMany({});
+      return res.status(200).json({
+        success: true,
+        data: birthRequests,
+        message: "sucessfully fetch",
+      });
+    } catch (error) {
+      return res.status(200).json({
+        success: false,
+        data: error,
+        message: "error",
+      });
+    }
+  },
+  approve: async (req, res, next) => {
+    const id = req.params.id;
+    // console.log(id);
+    // RequestSchema.idrequest.parse(req.body);
+    const existingRequest = await prisma.idRequests.findFirst({
+      where: {
+        id: +id,
+      },
+    });
+    console.log(existingRequest);
+    if (!existingRequest) {
+      return res.status(200).json({
+        success: false,
+        message: "request not existed",
+      });
+    }
+    const approveidRequest = await prisma.idRequests.update({
+      where: {
+        id: +id,
+      },
+      data: {
+        approved: true,
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Approved by the Manager",
+      data: approveidRequest,
+    });
   },
 };
 export default RequestController;

@@ -3,12 +3,11 @@ import { z } from "zod";
 const userSchema = {
   register: z.object({
     email: z.string().email(),
-    password: z.string().min(6),
-    phone: z.string().max(14),
+    password: z.string(),
+    phone: z.string(),
     firstName: z.string(),
     middleName: z.string(),
     lastName: z.string(),
-    kebele: z.string(),
     gender: z.string(),
   }),
   update: z.object(),
