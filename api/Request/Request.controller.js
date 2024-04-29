@@ -151,5 +151,45 @@ const RequestController = {
       data: approveidRequest,
     });
   },
+  getgivenidrequest: async (req, res, next) => {
+    try {
+      const idrequests = await prisma.idRequests.findMany({
+        where: {
+          given: true,
+        },
+      });
+      return res.status(200).json({
+        success: true,
+        data: idrequests,
+        message: "sucessfully fetch",
+      });
+    } catch (error) {
+      return res.status(200).json({
+        success: false,
+        data: error,
+        message: "error",
+      });
+    }
+  },
+  getapprovedidrequest: async (req, res, next) => {
+    try {
+      const idrequests = await prisma.idRequests.findMany({
+        where: {
+          approved: true,
+        },
+      });
+      return res.status(200).json({
+        success: true,
+        data: idrequests,
+        message: "sucessfully fetch",
+      });
+    } catch (error) {
+      return res.status(200).json({
+        success: false,
+        data: error,
+        message: "error",
+      });
+    }
+  },
 };
 export default RequestController;

@@ -5,6 +5,14 @@ import { errorHandler } from "../../config/error.js";
 const RequestRoute = express.Router();
 RequestRoute.post("/id", errorHandler(RequestController.idrequest));
 RequestRoute.get("/getid", errorHandler(RequestController.getidrequest));
+RequestRoute.get(
+  "/getapprovedidrequest",
+  errorHandler(RequestController.getapprovedidrequest)
+);
+RequestRoute.get(
+  "/getgivenidrequest",
+  errorHandler(RequestController.getgivenidrequest)
+);
 RequestRoute.post("/birth", errorHandler(RequestController.birthrequests));
 RequestRoute.get("/getbirth", errorHandler(RequestController.getbirthRequests));
 RequestRoute.put("/approve/:id", errorHandler(RequestController.approve));

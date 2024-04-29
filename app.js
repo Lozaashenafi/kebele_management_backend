@@ -12,9 +12,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: true, credentials: true }));
 //import api router
 import appRoute from "./route/index.js";
+import { Public } from "@prisma/client/runtime/library";
 app.use("/api", appRoute);
-
+app.use(express.static("Public"));
 //testing route
+
 app.get("/", (req, res, next) => {
   return res.send("<h1>Working ... </h1>");
 });

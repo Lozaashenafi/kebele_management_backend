@@ -70,6 +70,7 @@ model Users{
       addressId Int?
       //ref
       profile Profiles?
+      news News[]
       //refress
       address   Address?  @relation(fields: [addressId], references: [id], onDelete: Cascade)
       
@@ -92,6 +93,7 @@ model IdRequests {
   id Int @id @default(autoincrement())
   menderId Int?
   approved Boolean? @default(false)
+  given Boolean? @default(false)
   email String @unique
   fullName String
   fatherName String
@@ -131,6 +133,7 @@ model BirthRequests {
   id Int @id @default(autoincrement())
   idStatusId Int?
   approved Boolean? @default(false)
+  given Boolean? @default(false)
   email String
   firstName String
   middleName String
@@ -164,3 +167,13 @@ model Residents{
     homeNo Int
     idNumber Int
 }
+model News {
+    id            Int  @id    @default(autoincrement())
+    userId Int?
+    image_url          String
+    title              String
+    description        String
+    publication_date   DateTime @default(now())
+     //reference
+     user Users? @relation(fields: [userId],references: [id],onDelete: Cascade)
+  }
